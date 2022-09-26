@@ -3,8 +3,7 @@ import logging
 from aiogram import types, Dispatcher
 
 
-# @dp.message_handler()  # Any message to bot/chat
-async def any_message(message: types.Message):
+async def any_message(message: types.Message):  # Any message to bot/chat. Must be last in order of handlers!
     logging.info(f'"@{message.from_user.username}" id={message.from_user.id} chat_id:{message.chat.id}: {message.text}')
     if 'привет' in message.text.lower():
         await message.answer('И тебе не хворать!')

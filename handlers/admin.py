@@ -10,13 +10,11 @@ class FSMAdmin(StatesGroup):
     price = State()
 
 
-# @dp.message_handler(commands=['Upload'], state=None)
 async def admin_start(message: types.Message):
     await FSMAdmin.photo.set()
     await message.answer('Upload photo')
 
 
-# @dp.message_handler(content_types=['photo'], state=FSMAdmin.photo)
 async def set_photo(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['photo'] = message.photo[0].file_id
@@ -24,7 +22,6 @@ async def set_photo(message: types.Message, state: FSMContext):
     await message.answer('Now, enter title (name):')
 
 
-# @dp.message_handler(state=FSMAdmin.name)
 async def set_name(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['name'] = message.text
@@ -32,7 +29,6 @@ async def set_name(message: types.Message, state: FSMContext):
     await message.answer('Now, enter description:')
 
 
-# @dp.message_handler(state=FSMAdmin.desctiption)
 async def set_description(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['desctiption'] = message.text
@@ -40,7 +36,6 @@ async def set_description(message: types.Message, state: FSMContext):
     await message.answer('Now, set the price:')
 
 
-# @dp.message_handler(state=FSMAdmin.price)
 async def set_price(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['price'] = float(message.text)
