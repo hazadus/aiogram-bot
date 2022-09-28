@@ -1,16 +1,17 @@
+import os
 import sys
 import logging
 
 from aiogram.utils import executor
 
-from spawn_bot import dp
+from spawn_bot import dp, bot
 from handlers import client, admin, common
 
 
 # Configure logger
 logging.basicConfig(level=logging.INFO,
                     handlers=[
-                        logging.FileHandler('aiogram_bot.log'),
+                        logging.FileHandler(os.getenv('BOT_LOG_FILENAME')),
                         logging.StreamHandler(sys.stdout)  # output to file AND console
                     ],
                     format="%(asctime)s - %(levelname)s\t%(module)s/%(funcName)s:%(lineno)d\t- %(message)s",
@@ -20,6 +21,7 @@ logging.basicConfig(level=logging.INFO,
 
 async def on_startup(_):
     logging.info('Bot started.')
+    await bot.send_message(os.getenv('BOT_ADMIN'), 'Bot started.')
 
 
 client.register_client_handlers(dp)

@@ -1,3 +1,6 @@
+import os
+import logging
+
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -11,9 +14,12 @@ class FSMAdmin(StatesGroup):
     price = State()
 
 
-async def admin_start(message: types.Message):  # TODO: check if user is admin via os.getenv('BOT_ADMIN')
-    await FSMAdmin.photo.set()
-    await message.answer('Upload photo')
+async def admin_start(message: types.Message):
+    if str(message.from_user.id) == os.getenv('BOT_ADMIN'):
+        await FSMAdmin.photo.set()
+        await message.answer('Upload photo')
+    else:
+        await message.answer(f"Anly admin has access to this command.")
 
 
 async def admin_cancel(message: types.Message, state: FSMContext):
@@ -55,6 +61,17 @@ async def set_price(message: types.Message, state: FSMContext):
     await state.finish()
 
 
+async def admin_getlogs(message: types.Message):
+    if str(message.from_user.id) == os.getenv('BOT_ADMIN'):
+        if os.path.exists(str(os.getenv('BOT_LOG_FILENAME'))):
+            await message.answer('Sending logs...')
+            await message.answer_document(open(os.getenv('BOT_LOG_FILENAME'), 'rb'))
+        else:
+            await message.answer('Log file not found!')
+    else:
+        await message.answer(f"Anly admin has access to this command.")
+
+
 def register_admin_handlers(disp: Dispatcher):
     disp.register_message_handler(admin_start, commands=['upload'], state=None)
     disp.register_message_handler(admin_cancel, commands=['отмена', 'cancel'], state='*')
@@ -64,3 +81,4 @@ def register_admin_handlers(disp: Dispatcher):
     disp.register_message_handler(set_name, state=FSMAdmin.name)
     disp.register_message_handler(set_description, state=FSMAdmin.desctiption)
     disp.register_message_handler(set_price, state=FSMAdmin.price)
+    disp.register_message_handler(admin_getlogs, commands=['getlogs'])

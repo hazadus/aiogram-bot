@@ -1,11 +1,12 @@
 # aiogram bot
 Telegram bot template built using aiogram library.
 
-## References
-- [aiogram docs](https://docs.aiogram.dev/en/latest/)
-- [aiogram on GitHub](https://github.com/aiogram/aiogram)
+## Contents
+ * [Deployment](#deployment)
+ * [Running](#running)
+ * [References](#references)
 
-## Installation
+## Deployment
 ```bash
 $ cd /usr/projects
 $ git clone https://github.com/hazadus/aiogram-bot
@@ -19,8 +20,11 @@ Edit `run_bot.sh`:
 #!/bin/bash
 
 # Set these env vars according to yours
+# Your bot's token:
 export BOT_TOKEN=TelegramBotToken
-export BOT_ADMIN=Bot-AdminChatID
+# Your telegram ID:
+export BOT_ADMIN=BotAdminChatID
+export BOT_LOG_FILENAME=aiogram_bot.log
 
 cd /usr/projects/aiogram-bot
 source bin/activate
@@ -32,3 +36,8 @@ Then `chmod a+x ./run_bot.sh`.
 ```bash
 $ ./run_bot.sh
 ```
+
+## References
+- [aiogram docs](https://docs.aiogram.dev/en/latest/)
+- [aiogram on GitHub](https://github.com/aiogram/aiogram)
+- [Python Hub Studio - aiogram video lessons](https://www.youtube.com/watch?v=TYs3-uyjC30&list=PLNi5HdK6QEmX1OpHj0wvf8Z28NYoV5sBJ)
