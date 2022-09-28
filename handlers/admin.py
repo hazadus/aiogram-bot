@@ -9,7 +9,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 class FSMAdmin(StatesGroup):
     photo = State()
     name = State()
-    desctiption = State()
+    description = State()
     price = State()
 
 
@@ -45,7 +45,7 @@ async def set_name(message: types.Message, state: FSMContext):
 
 async def set_description(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['desctiption'] = message.text
+        data['description'] = message.text
     await FSMAdmin.next()
     await message.answer('Now, set the price:')
 
@@ -68,7 +68,7 @@ async def admin_getlogs(message: types.Message):
         await message.answer('Log file not found!')
 
 
-async def admin_photo_video(message: types.Message):
+async def admin_media(message: types.Message):
     """
     Used to get media ID. Use IDs to send these images/videos/gifs to chats or users.
     """
@@ -78,6 +78,8 @@ async def admin_photo_video(message: types.Message):
         await message.reply(f'Video ID: {message.video.file_id}')
     if message.animation:
         await message.reply(f'Animation ID: {message.animation.file_id}')
+    if message.sticker:
+        await message.reply(f'Sticker ID: {message.sticker.file_id}')
 
 
 async def empty(message: types.Message):  # Must be last, deletes all non-existend commands/messages.
@@ -92,16 +94,16 @@ def register_admin_handlers(disp: Dispatcher):
     disp.register_message_handler(admin_cancel, Text(equals='cancel', ignore_case=True), state='*')
     disp.register_message_handler(set_photo, content_types=['photo'], state=FSMAdmin.photo)
     disp.register_message_handler(set_name, state=FSMAdmin.name)
-    disp.register_message_handler(set_description, state=FSMAdmin.desctiption)
+    disp.register_message_handler(set_description, state=FSMAdmin.description)
     disp.register_message_handler(set_price, state=FSMAdmin.price)
     disp.register_message_handler(admin_getlogs,
                                   lambda message: message.chat.type == 'private'
                                                   and str(message.from_user.id) == os.getenv('BOT_ADMIN'),
                                   commands=['getlogs'])
-    disp.register_message_handler(admin_photo_video,
+    disp.register_message_handler(admin_media,
                                   lambda message: message.chat.type == 'private'
                                                   and str(message.from_user.id) == os.getenv('BOT_ADMIN'),
-                                  content_types=['photo', 'video', 'animation'], )
+                                  content_types=['photo', 'video', 'animation', 'sticker'])
     disp.register_message_handler(empty,
                                   lambda message: message.chat.type == 'private'
                                                   and str(message.from_user.id) == os.getenv('BOT_ADMIN'))
