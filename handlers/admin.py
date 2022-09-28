@@ -71,10 +71,22 @@ async def admin_getlogs(message: types.Message):
         await message.answer('Anly admin has access to this command.')
 
 
-async def empty(message: types.Message):  # Must be last, deletes all non-existend commands/messages.
-    if str(message.from_user.id) == os.getenv('BOT_ADMIN'):
-        await message.answer('No such command!')
-        await message.delete()
+async def admin_photo_video(message: types.Message):
+    """
+    Used to get media ID. Use IDs to send these images/videos/gifs to chats or users.
+    """
+    if message.photo:
+        await message.reply(f'Photo ID: {message.photo[0].file_id}')
+    if message.video:
+        await message.reply(f'Video ID: {message.video.file_id}')
+    if message.animation:
+        await message.reply(f'Animation ID: {message.animation.file_id}')
+
+
+# async def empty(message: types.Message):  # Must be last, deletes all non-existend commands/messages.
+#     if message.chat.type == 'PRIVATE' and str(message.from_user.id) == os.getenv('BOT_ADMIN'):
+#         await message.answer('No such command!')
+#         await message.delete()
 
 
 def register_admin_handlers(disp: Dispatcher):
@@ -87,4 +99,5 @@ def register_admin_handlers(disp: Dispatcher):
     disp.register_message_handler(set_description, state=FSMAdmin.desctiption)
     disp.register_message_handler(set_price, state=FSMAdmin.price)
     disp.register_message_handler(admin_getlogs, commands=['getlogs'])
-    disp.register_message_handler(empty)
+    disp.register_message_handler(admin_photo_video, content_types=['photo', 'video', 'animation'])
+    # disp.register_message_handler(empty)
