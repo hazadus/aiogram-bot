@@ -24,7 +24,7 @@ async def on_startup(_):
 
 client.register_client_handlers(dp)
 admin.register_admin_handlers(dp)
-common.register_common_handlers(dp)
+common.register_common_handlers(dp)  # Must be last, because it handles any message!
 
 executor.start_polling(dp,
                        skip_updates=True,  # Skip updates when bot is offline

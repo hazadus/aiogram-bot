@@ -5,7 +5,6 @@ from spawn_bot import bot
 from keyboards import kbd_client
 
 
-# @dp.message_handler(commands=['start', 'help'])
 async def command_start(message: types.Message):
     # noinspection PyBroadException
     try:
