@@ -1,5 +1,4 @@
 import os
-import logging
 
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
@@ -19,7 +18,7 @@ async def admin_start(message: types.Message):
         await FSMAdmin.photo.set()
         await message.answer('Upload photo')
     else:
-        await message.answer(f"Anly admin has access to this command.")
+        await message.answer('Anly admin has access to this command.')
 
 
 async def admin_cancel(message: types.Message, state: FSMContext):
@@ -69,7 +68,13 @@ async def admin_getlogs(message: types.Message):
         else:
             await message.answer('Log file not found!')
     else:
-        await message.answer(f"Anly admin has access to this command.")
+        await message.answer('Anly admin has access to this command.')
+
+
+async def empty(message: types.Message):  # Must be last, deletes all non-existend commands/messages.
+    if str(message.from_user.id) == os.getenv('BOT_ADMIN'):
+        await message.answer('No such command!')
+        await message.delete()
 
 
 def register_admin_handlers(disp: Dispatcher):
@@ -82,3 +87,4 @@ def register_admin_handlers(disp: Dispatcher):
     disp.register_message_handler(set_description, state=FSMAdmin.desctiption)
     disp.register_message_handler(set_price, state=FSMAdmin.price)
     disp.register_message_handler(admin_getlogs, commands=['getlogs'])
+    disp.register_message_handler(empty)
