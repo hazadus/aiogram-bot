@@ -5,6 +5,8 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
+from database import db_sqlite
+
 
 class FSMAdmin(StatesGroup):
     photo = State()
@@ -54,8 +56,7 @@ async def set_price(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['price'] = float(message.text)
 
-    async with state.proxy() as data:
-        await message.answer(str(data))
+    await db_sqlite.sqlite_add_product(state)
 
     await state.finish()
 
