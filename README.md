@@ -7,6 +7,7 @@ Telegram bot template built using aiogram library.
  * [References](#references)
 
 ## Deployment
+Use following commands to deploy bot on Linux/Mac OS X system:
 ```bash
 $ cd /usr/projects
 $ git clone https://github.com/hazadus/aiogram-bot
@@ -15,6 +16,10 @@ $ cd ./aiogram-bot
 $ source bin/activate
 $ pip install -r requirements.txt
 ```
+
+
+## Running
+### Server Mode
 Edit `run_bot.sh`:
 ```bash
 #!/bin/bash
@@ -25,16 +30,34 @@ export BOT_TOKEN=TelegramBotToken
 # Your telegram ID:
 export BOT_ADMIN=BotAdminChatID
 export BOT_LOG_FILENAME=aiogram_bot.log
+export BOT_SQLITE_FILENAME=aiogram_bot.db
 
 cd /usr/projects/aiogram-bot
 source bin/activate
 nohup python ./aiogram_bot.py &
 ```
 Then `chmod a+x ./run_bot.sh`.
-
-## Running
+To start the bot in production mode:
 ```bash
 $ ./run_bot.sh
+```
+### Dev/Debug Mode
+Edit `run_bot_d.sh`:
+```bash
+#!/bin/bash
+
+# Set these env vars according to yours
+export BOT_TOKEN=token
+export BOT_ADMIN=chatid
+export BOT_LOG_FILENAME=aiogram_bot.log
+export BOT_SQLITE_FILENAME=aiogram_bot.db
+
+python ./aiogram_bot.py
+```
+Then `chmod a+x ./run_bot_d.sh`.
+To start the bot in dev/debug mode:
+```bash
+$ ./run_bot_d.sh
 ```
 
 ## References
