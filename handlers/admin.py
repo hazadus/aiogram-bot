@@ -97,7 +97,7 @@ def register_admin_handlers(disp: Dispatcher):
     disp.register_message_handler(set_name, state=FSMAdmin.name)
     disp.register_message_handler(set_description, state=FSMAdmin.description)
     disp.register_message_handler(set_price, state=FSMAdmin.price)
-    disp.register_message_handler(admin_getlogs,
+    disp.register_message_handler(admin_getlogs,  # TODO: try to create named function for this filter
                                   lambda message: message.chat.type == 'private'
                                                   and str(message.from_user.id) == os.getenv('BOT_ADMIN'),
                                   commands=['getlogs'])

@@ -21,3 +21,7 @@ async def sqlite_add_product(state):
     async with state.proxy() as data:
         cursor.execute('INSERT INTO menu VALUES (?, ?, ?, ?)', tuple(data.values()))
         db.commit()
+
+
+def sqlite_get_all_products():
+    return cursor.execute('SELECT * FROM menu').fetchall()
