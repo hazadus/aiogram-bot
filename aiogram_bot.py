@@ -6,6 +6,8 @@ from aiogram.utils import executor
 
 from spawn_bot import dp, bot
 from handlers import client, admin, common
+from database import db_sqlite
+from keyboards import keyboard_admin
 
 
 # Configure logger
@@ -21,7 +23,8 @@ logging.basicConfig(level=logging.INFO,
 
 async def on_startup(_):
     logging.info('Bot started.')
-    await bot.send_message(os.getenv('BOT_ADMIN'), 'Bot started.')
+    await bot.send_message(os.getenv('BOT_ADMIN'), 'Bot started.', reply_markup=keyboard_admin.kbd_admin)
+    db_sqlite.sqlite_start()
 
 
 client.register_client_handlers(dp)

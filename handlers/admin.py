@@ -5,6 +5,8 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
+from database.db_sqlite import sqlite_add_product
+
 
 class FSMAdmin(StatesGroup):
     photo = State()
@@ -13,12 +15,9 @@ class FSMAdmin(StatesGroup):
     price = State()
 
 
-async def admin_start(message: types.Message):
-    if message.chat.type == 'private' and str(message.from_user.id) == os.getenv('BOT_ADMIN'):
-        await FSMAdmin.photo.set()
-        await message.answer('Upload photo')
-    else:
-        await message.answer('Anly admin has access to this command.')
+async def admin_upload(message: types.Message):
+    await FSMAdmin.photo.set()
+    await message.answer('Upload photo')
 
 
 async def admin_cancel(message: types.Message, state: FSMContext):
@@ -26,7 +25,7 @@ async def admin_cancel(message: types.Message, state: FSMContext):
     if current_state is None:
         return
     await state.finish()
-    await message.answer('OK.')
+    await message.answer('OK, canceled.')
 
 
 async def set_photo(message: types.Message, state: FSMContext):
@@ -54,8 +53,7 @@ async def set_price(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['price'] = float(message.text)
 
-    async with state.proxy() as data:
-        await message.answer(str(data))
+    await sqlite_add_product(state)
 
     await state.finish()
 
@@ -87,23 +85,19 @@ async def empty(message: types.Message):  # Must be last, deletes all non-existe
     await message.delete()
 
 
+def filter_admin(message: types.Message):
+    return message.chat.type == 'private' and str(message.from_user.id) == os.getenv('BOT_ADMIN')
+
+
 def register_admin_handlers(disp: Dispatcher):
-    disp.register_message_handler(admin_start, commands=['upload'], state=None)
-    disp.register_message_handler(admin_cancel, commands=['отмена', 'cancel'], state='*')
-    disp.register_message_handler(admin_cancel, Text(equals='отмена', ignore_case=True), state='*')
-    disp.register_message_handler(admin_cancel, Text(equals='cancel', ignore_case=True), state='*')
-    disp.register_message_handler(set_photo, content_types=['photo'], state=FSMAdmin.photo)
-    disp.register_message_handler(set_name, state=FSMAdmin.name)
-    disp.register_message_handler(set_description, state=FSMAdmin.description)
-    disp.register_message_handler(set_price, state=FSMAdmin.price)
-    disp.register_message_handler(admin_getlogs,
-                                  lambda message: message.chat.type == 'private'
-                                                  and str(message.from_user.id) == os.getenv('BOT_ADMIN'),
-                                  commands=['getlogs'])
-    disp.register_message_handler(admin_media,
-                                  lambda message: message.chat.type == 'private'
-                                                  and str(message.from_user.id) == os.getenv('BOT_ADMIN'),
-                                  content_types=['photo', 'video', 'animation', 'sticker'])
-    disp.register_message_handler(empty,
-                                  lambda message: message.chat.type == 'private'
-                                                  and str(message.from_user.id) == os.getenv('BOT_ADMIN'))
+    disp.register_message_handler(admin_upload, filter_admin, commands=['upload'], state=None)
+    disp.register_message_handler(admin_cancel, filter_admin, commands=['отмена', 'cancel'], state='*')
+    disp.register_message_handler(admin_cancel, filter_admin, Text(equals='отмена', ignore_case=True), state='*')
+    disp.register_message_handler(admin_cancel, filter_admin, Text(equals='cancel', ignore_case=True), state='*')
+    disp.register_message_handler(set_photo, filter_admin, content_types=['photo'], state=FSMAdmin.photo)
+    disp.register_message_handler(set_name, filter_admin, state=FSMAdmin.name)
+    disp.register_message_handler(set_description, filter_admin, state=FSMAdmin.description)
+    disp.register_message_handler(set_price, filter_admin, state=FSMAdmin.price)
+    disp.register_message_handler(admin_getlogs, filter_admin, commands=['getlogs'])
+    disp.register_message_handler(admin_media, filter_admin, content_types=['photo', 'video', 'animation', 'sticker'])
+    disp.register_message_handler(empty, filter_admin)
