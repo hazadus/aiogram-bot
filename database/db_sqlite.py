@@ -24,5 +24,10 @@ async def sqlite_add_product(state):
         db.commit()
 
 
-def sqlite_get_all_products():
-    return cursor.execute('SELECT img, name, description, price FROM products').fetchall()
+async def sqlite_get_all_products():
+    return cursor.execute('SELECT id, img, name, description, price FROM products').fetchall()
+
+
+async def sqlite_delete_product(product_id: int):
+    cursor.execute('DELETE FROM products WHERE id == ?', (product_id,))
+    db.commit()
