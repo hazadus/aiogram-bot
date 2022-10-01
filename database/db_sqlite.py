@@ -11,7 +11,8 @@ def sqlite_start():
 
     if db:
         logging.info(f"Connected to SQLite DB {os.getenv('BOT_SQLITE_FILENAME')}")
-        db.execute("CREATE TABLE IF NOT EXISTS menu(img TEXT, name TEXT PRIMARY KEY, description TEXT, price TEXT)")
+        db.execute("CREATE TABLE IF NOT EXISTS "
+                   "products(id INTEGER PRIMARY KEY, img TEXT, name TEXT, description TEXT, price TEXT)")
         db.commit()
     else:
         logging.error(f"Connection to SQLite DB {os.getenv('BOT_SQLITE_FILENAME')} failed!")
@@ -19,9 +20,9 @@ def sqlite_start():
 
 async def sqlite_add_product(state):
     async with state.proxy() as data:
-        cursor.execute('INSERT INTO menu VALUES (?, ?, ?, ?)', tuple(data.values()))
+        cursor.execute('INSERT INTO products (img, name, description, price) VALUES (?, ?, ?, ?)', tuple(data.values()))
         db.commit()
 
 
 def sqlite_get_all_products():
-    return cursor.execute('SELECT * FROM menu').fetchall()
+    return cursor.execute('SELECT img, name, description, price FROM products').fetchall()

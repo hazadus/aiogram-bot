@@ -5,6 +5,7 @@ Telegram bot template built using aiogram library.
  * [Deployment](#deployment)
  * [Running](#running)
  * [References](#references)
+ * [ToDos](#todos)
 
 ## Deployment
 Use following commands to deploy bot on Linux/Mac OS X system:
@@ -63,4 +64,12 @@ $ ./run_bot_d.sh
 ## References
 - [aiogram docs](https://docs.aiogram.dev/en/latest/)
 - [aiogram on GitHub](https://github.com/aiogram/aiogram)
-- [Python Hub Studio - aiogram video lessons](https://www.youtube.com/watch?v=TYs3-uyjC30&list=PLNi5HdK6QEmX1OpHj0wvf8Z28NYoV5sBJ)
+- [Python Hub Studio - aiogram video lessons playlist](https://www.youtube.com/watch?v=TYs3-uyjC30&list=PLNi5HdK6QEmX1OpHj0wvf8Z28NYoV5sBJ)
+- [Python Hub Studio - aiogram inline buttons overview](https://www.youtube.com/watch?v=gpCIfQUbYlY&list=PLNi5HdK6QEmX1OpHj0wvf8Z28NYoV5sBJ&index=10)
+- [SQLite Tutorial](https://www.sqlitetutorial.net)
+
+## ToDos
+  * aiosqlite
+ * aioredis
+ * save new user info to DB table
+ * add user cart
